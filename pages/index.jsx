@@ -12,7 +12,7 @@ const Home = props => {
 
 Home.getInitialProps = async ctx => {
   // const res = await fetch('http://192.168.1.82:3000/api/getComics');
-  const res = await fetch('https://http://heimanhua.now.sh/api/getComics');
+  const res = await fetch('https://heimanhua.now.sh/api/getComics');
   const data = await res.json();
   if (res.status === 200) {
     return { comic: data };
