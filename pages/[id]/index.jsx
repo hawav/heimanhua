@@ -30,7 +30,7 @@ export default function ComicDetail(props) {
         </div>
         <div className='px-2'>
           {state.view === 'chapter' && (
-            <ChapterList id={props.comic.comic_id} />
+            <ChapterList id={props.comic.comic_id} chapters={props.chapters} />
           )}
         </div>
       </div>
@@ -38,14 +38,16 @@ export default function ComicDetail(props) {
   );
 }
 
-ComicDetail.getInitialProps = async ctx => {
-  if (ctx.query.id) {
-    const comic = (
-      await (
-        await fetch('https://heimanhua.now.sh/api/detail?id=' + ctx.query.id)
-        // await fetch('http://192.168.1.82:3000/api/detail?id=' + ctx.query.id)
-      ).json()
+export async function getServerSideProps(ctx) {
+  if (+ctx.query.id) {
+    const chaptersRes = await fetch(
+      'https://www.zymk.cn/nodeapi/comic/chapterList?id=' + ctx.query.id
     );
-    return { comic };
-  }
-};
+    const chapters = (await chaptersRes.json()).data;
+    const comicRes = await fetch(
+      'https://www.zymk.cn/nodeapi/comic/detail?id=' + ctx.query.id
+    );
+    const comic = (await comicRes.json()).data;
+    return { props: { comic, chapters } };
+  } else return { props: {} };
+}

@@ -1,28 +1,12 @@
-import React from 'react';
-import fetch from 'isomorphic-unfetch';
 import { withRouter } from 'next/router';
-
-// import { Container } from './styles';
+import React from 'react';
 
 export class ChapterList extends React.Component {
   constructor(props) {
     super(props);
-    if (props.id === undefined) throw '需要传输ComicID';
-
     this.state = {
       desc: true
     };
-  }
-
-  componentDidMount() {
-    (async () => {
-      const res = await fetch(
-        'https://heimanhua.now.sh/api/getChapterList?id=' + this.props.id
-        // 'http://192.168.1.82:3000/api/getChapterList?id=' + this.props.id
-      );
-      const data = await res.json();
-      this.setState({ chapters: data });
-    })();
   }
 
   handleChapter(cid) {
@@ -31,7 +15,7 @@ export class ChapterList extends React.Component {
 
   render() {
     return (
-      (this.state.chapters && (
+      (this.props.chapters && (
         <div>
           {/* {'上次更新：' &&
           new Date(state.chapters[0].create_time).toLocaleString()} */}
@@ -40,8 +24,7 @@ export class ChapterList extends React.Component {
               className='text-gray-600'
               onClick={() =>
                 this.setState({
-                  desc: !this.state.desc,
-                  chapters: this.state.chapters.reverse()
+                  desc: !this.state.desc
                 })
               }
             >
@@ -49,7 +32,10 @@ export class ChapterList extends React.Component {
             </button>
           </div>
           <div className='grid grid-cols-4'>
-            {this.state.chapters.map(c => (
+            {(
+              (this.state.desc && this.props.chapters) ||
+              this.props.chapters.reverse()
+            ).map(c => (
               <button
                 key={c.chapter_id}
                 className='m-2 py-1 rounded border text-center'

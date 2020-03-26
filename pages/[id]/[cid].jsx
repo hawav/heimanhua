@@ -13,30 +13,34 @@ function getPictures(chapterAddr, start, end) {
 }
 
 class View extends Component {
-  static async getInitialProps(ctx) {
-    const { id, cid } = ctx.query;
-    const result = await fetch(
-      `https://heimanhua.now.sh/api/getChapterInfo?id=${id}&cid=${cid}`
-      // `http://192.168.1.82:3000/api/getChapterInfo?id=${id}&cid=${cid}`
-    );
-    const data = await result.json();
-    return { chapterInfo: data };
-  }
   render() {
     const c = this.props.chapterInfo;
     return (
-      <div>
-        <img />
-        <div className='text-center'>
-          {/* <button className='mb-2 border-b w-full py-2'>上一章</button> */}
-          {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
-            <img src={src} className='mx-auto max-w-full' />
-          ))}
-          {/* <button className='mt-2 border-t w-full py-2'>下一章</button> */}
+      (c && (
+        <div>
+          <img />
+          <div className='text-center'>
+            {/* <button className='mb-2 border-b w-full py-2'>上一章</button> */}
+            {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
+              <img src={src} className='mx-auto max-w-full' />
+            ))}
+            {/* <button className='mt-2 border-t w-full py-2'>下一章</button> */}
+          </div>
         </div>
-      </div>
+      )) || <div>Not found</div>
     );
   }
 }
 
 export default withRouter(View);
+
+export async function getServerSideProps(ctx) {
+  const { id, cid } = ctx.query;
+  if (+id && +cid) {
+    const result = await fetch(
+      `https://www.zymk.cn/nodeapi/comic/chapterInfo?id=${id}&chapterId=${cid}`
+    );
+    const data = await result.json();
+    return { props: { chapterInfo: data.data } };
+  } else return { props: {} };
+}

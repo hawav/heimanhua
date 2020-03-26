@@ -7,7 +7,10 @@ import Document, { Head, Main, NextScript } from 'next/document';
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
+  }
 
+  componentDidMount() {
     window.dataLayer = window.dataLayer || [];
     function gtag() {
       dataLayer.push(arguments);
@@ -15,8 +18,6 @@ export default class MyDocument extends Document {
     gtag('js', new Date());
 
     gtag('config', 'UA-153477912-2');
-
-    return { ...initialProps };
   }
 
   render() {
