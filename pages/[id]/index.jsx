@@ -42,7 +42,8 @@ ComicDetail.getInitialProps = async ctx => {
   if (ctx.query.id) {
     const comic = (
       await (
-        await fetch('http://192.168.1.82:3000/api/detail?id=' + ctx.query.id)
+        await fetch('https://heimanhua.now.sh/api/detail?id=' + ctx.query.id)
+        // await fetch('http://192.168.1.82:3000/api/detail?id=' + ctx.query.id)
       ).json()
     );
     return { comic };

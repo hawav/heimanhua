@@ -17,7 +17,8 @@ export class ChapterList extends React.Component {
   componentDidMount() {
     (async () => {
       const res = await fetch(
-        'http://192.168.1.82:3000/api/getChapterList?id=' + this.props.id
+        'https://heimanhua.now.sh/api/getChapterList?id=' + this.props.id
+        // 'http://192.168.1.82:3000/api/getChapterList?id=' + this.props.id
       );
       const data = await res.json();
       this.setState({ chapters: data });

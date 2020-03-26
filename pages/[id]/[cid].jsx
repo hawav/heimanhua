@@ -16,7 +16,8 @@ class View extends Component {
   static async getInitialProps(ctx) {
     const { id, cid } = ctx.query;
     const result = await fetch(
-      `http://192.168.1.82:3000/api/getChapterInfo?id=${id}&cid=${cid}`
+      `https://heimanhua.now.sh/api/getChapterInfo?id=${id}&cid=${cid}`
+      // `http://192.168.1.82:3000/api/getChapterInfo?id=${id}&cid=${cid}`
     );
     const data = await result.json();
     return { chapterInfo: data };
