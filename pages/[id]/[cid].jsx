@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
 import { initGA, logPageView } from '../../utils/analytics';
+import { withRouter } from 'next/router';
 
 function getPictures(chapterAddr, start, end) {
   const pictures = [];
@@ -12,7 +13,7 @@ function getPictures(chapterAddr, start, end) {
   return pictures;
 }
 
-export default class View extends Component {
+export class View extends Component {
   componentDidMount() {
     if (!window.GA_INITIALIZED) {
       initGA();
@@ -20,6 +21,14 @@ export default class View extends Component {
     }
     logPageView();
   }
+
+  go(cid) {
+    this.props.router.replace(
+      '/[id]/[cid]/',
+      `/${this.props.chapterInfo.comic_id}/${cid}`
+    );
+  }
+
   render() {
     const c = this.props.chapterInfo;
     return (
@@ -27,11 +36,25 @@ export default class View extends Component {
         <div>
           <img />
           <div className='text-center'>
-            {/* <button className='mb-2 border-b w-full py-2'>上一章</button> */}
+            {this.props.prev && (
+              <button
+                className='mb-2 border-b w-full py-2'
+                onClick={this.go.bind(this, this.props.prev.chapter_id)}
+              >
+                上一章
+              </button>
+            )}
             {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
               <img key={src} src={src} className='mx-auto max-w-full' />
             ))}
-            {/* <button className='mt-2 border-t w-full py-2'>下一章</button> */}
+            {this.props.next && (
+              <button
+                className='mt-2 border-t w-full py-2'
+                onClick={this.go.bind(this, this.props.next.chapter_id)}
+              >
+                下一章
+              </button>
+            )}
           </div>
         </div>
       )) || <div>Not found</div>
@@ -46,6 +69,19 @@ export async function getServerSideProps(ctx) {
       `https://www.zymk.cn/nodeapi/comic/chapterInfo?id=${id}&chapterId=${cid}`
     );
     const data = await result.json();
-    return { props: { chapterInfo: data.data } };
+    const chaptersRes = await fetch(
+      'https://www.zymk.cn/nodeapi/comic/chapterList?id=' + id
+    );
+    const chapters = (await chaptersRes.json()).data;
+    const i = chapters.findIndex(c => c.chapter_id == cid);
+    return {
+      props: {
+        chapterInfo: data.data,
+        prev: (i !== -1 && i < chapters.length - 1 && chapters[i + 1]) || null,
+        next: (i > 0 && chapters[i - 1]) || null
+      }
+    };
   } else return { props: {} };
 }
+
+export default withRouter(View);
