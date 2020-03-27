@@ -10,16 +10,6 @@ export default class MyDocument extends Document {
     return { ...initialProps };
   }
 
-  componentDidMount() {
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-153477912-2');
-  }
-
   render() {
     return (
       <html>
