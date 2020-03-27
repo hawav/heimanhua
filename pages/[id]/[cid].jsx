@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
 import { initGA, logPageView } from '../../utils/analytics';
@@ -34,7 +35,20 @@ export class View extends Component {
     return (
       (c && (
         <div>
-          <img />
+          <NextSeo
+            title={
+              '嘿，漫画！' +
+              this.props.chapterInfo.comic_name +
+              '-' +
+              this.props.chapterInfo.chapter_name
+            }
+            description={
+              this.props.chapterInfo.comic_desc +
+              '-' +
+              this.props.chapterInfo.chapter_name +
+              '-嘿，漫画！'
+            }
+          />
           <div className='text-center'>
             {this.props.prev && (
               <button
@@ -44,9 +58,16 @@ export class View extends Component {
                 上一章
               </button>
             )}
-            {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
-              <img key={src} src={src} className='mx-auto max-w-full' />
-            ))}
+            <div className='grid xl:grid-cols-3 md:grid-cols-2'>
+              {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
+                <img
+                  key={src}
+                  src={src}
+                  className='mx-auto max-w-full'
+                  width='640px'
+                />
+              ))}
+            </div>
             {this.props.next && (
               <button
                 className='mt-2 border-t w-full py-2'

@@ -28,7 +28,7 @@ export default class ComicDetail extends Component {
       (this.props.comic && (
         <div>
           <NextSeo
-            title={this.props.comic.comic_name + '-嘿，漫画！'}
+            title={'嘿，漫画！' + this.props.comic.comic_name}
             description={this.props.comic.comic_desc + '-嘿，漫画！'}
           />
           <div className='flex bg-indigo-500 text-white px-3 mb-20 pt-6'>
