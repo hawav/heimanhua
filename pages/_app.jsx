@@ -5,15 +5,15 @@ class MyApp extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
+  // componentDidMount() {
+  //   window.dataLayer = window.dataLayer || [];
+  //   function gtag() {
+  //     window.dataLayer.push(arguments);
+  //   }
+  //   gtag('js', new Date());
 
-    gtag('config', 'UA-153477912-2');
-  }
+  //   gtag('config', 'UA-153477912-2');
+  // }
 
   render() {
     const { Component, pageProps } = this.props;

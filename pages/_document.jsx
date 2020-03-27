@@ -17,10 +17,10 @@ export default class MyDocument extends Document {
           <title>嘿，漫画！</title>
 
           {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
-          <script
+          {/* <script
             async
             src='https://www.googletagmanager.com/gtag/js?id=UA-153477912-2'
-          ></script>
+          ></script> */}
 
           <link
             href='https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css'

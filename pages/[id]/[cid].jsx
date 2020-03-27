@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
-import { withRouter } from 'next/router';
+import React, { Component } from 'react';
+import { initGA, logPageView } from '../../utils/analytics';
 
 function getPictures(chapterAddr, start, end) {
   const pictures = [];
@@ -12,7 +12,14 @@ function getPictures(chapterAddr, start, end) {
   return pictures;
 }
 
-class View extends Component {
+export default class View extends Component {
+  componentDidMount() {
+    if (!window.GA_INITIALIZED) {
+      initGA();
+      window.GA_INITIALIZED = true;
+    }
+    logPageView();
+  }
   render() {
     const c = this.props.chapterInfo;
     return (
@@ -22,7 +29,7 @@ class View extends Component {
           <div className='text-center'>
             {/* <button className='mb-2 border-b w-full py-2'>上一章</button> */}
             {getPictures(c.chapter_addr, c.start_var, c.end_var).map(src => (
-              <img src={src} className='mx-auto max-w-full' />
+              <img key={src} src={src} className='mx-auto max-w-full' />
             ))}
             {/* <button className='mt-2 border-t w-full py-2'>下一章</button> */}
           </div>
@@ -31,8 +38,6 @@ class View extends Component {
     );
   }
 }
-
-export default withRouter(View);
 
 export async function getServerSideProps(ctx) {
   const { id, cid } = ctx.query;
