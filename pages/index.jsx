@@ -12,10 +12,10 @@ export default class Home extends Component {
   }
 
   handleSearch = e => {
-    // const reg = new RegExp(e.target.value);
-    // this.setState({
-    //   comic: this.props.comic.filter(c => reg.test(c.comic_name))
-    // });
+    const reg = new RegExp(e.target.value);
+    this.setState({
+      comic: this.props.comic.filter(c => reg.test(c.comic_name))
+    });
   };
 
   componentDidMount() {
@@ -38,7 +38,11 @@ export default class Home extends Component {
               onChange={this.handleSearch.bind(this)}
             />
           </div>
-          <ComicListView comics={this.state.comic.slice(0, 250)} />
+          <ComicListView
+            comics={this.state.comic
+              .sort((c1, c2) => +c2.total_click - +c1.total_click)
+              .slice(0, 250)}
+          />
         </div>
       )
     );
@@ -50,10 +54,9 @@ export async function getServerSideProps(ctx) {
 
   const result = await fetch('https://www.zymk.cn/nodeapi/comic/allComic/');
   const data = await result.json();
-  const comic = data.data.sort((c1, c2) => +c2.total_click - +c1.total_click);
   return {
     props: {
-      comic
+      comic: data.data
     }
   };
 }
