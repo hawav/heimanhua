@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { getImageUrl } from '../../utils/ComicUtils';
 import ChapterList from '../../components/ChapterList';
+import { NextSeo } from 'next-seo';
 
 // import { Container } from './styles';
 
@@ -10,6 +11,10 @@ export default function ComicDetail(props) {
   return (
     (props.comic && (
       <div>
+        <NextSeo
+          title={props.comic.comic_name + '-嘿，漫画！'}
+          description={props.comic.comic_desc + '-嘿，漫画！'}
+        />
         <div className='flex bg-indigo-500 text-white px-3 mb-20 pt-6'>
           <div style={{ width: '8rem' }}></div>
           <img

@@ -14,6 +14,8 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
+          <title>嘿，漫画！</title>
+
           {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
           <script
             async
