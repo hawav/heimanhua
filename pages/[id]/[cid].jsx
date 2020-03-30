@@ -8,7 +8,7 @@ function getPictures(chapterAddr, start, end) {
   const pictures = [];
   for (let i = start; i <= end; ++i) {
     pictures.push(
-      `http://mhpic.xiaomingtaiji.net/comic/${chapterAddr}/${i}.jpg-zymk.middle`
+      `https://mhpic.xiaomingtaiji.net/comic/${chapterAddr}/${i}.jpg-zymk.middle`
     );
   }
   return pictures;
