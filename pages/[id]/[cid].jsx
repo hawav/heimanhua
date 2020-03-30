@@ -66,6 +66,13 @@ export class View extends Component {
       '/[id]/[cid]/',
       `/${this.state.chapterInfo.comic_id}/${cid}`
     );
+    const { id } = this.props.router.query;
+    if (id) {
+      this.fetchDetail(id, cid);
+      this.fetchChapterList(id, cid);
+    } else {
+      console.log('找不到id');
+    }
   }
 
   render() {
