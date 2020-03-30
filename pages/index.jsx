@@ -37,8 +37,6 @@ export default class Home extends Component {
     }
     logPageView();
 
-    this.log('攻城狮们正在努力修复BUG，给您造成不便，敬请谅解。');
-    this.log('正在加载，请稍等。');
     const error = window.console.error;
     window.console.error = (...message) => {
       error(...message);
@@ -49,13 +47,12 @@ export default class Home extends Component {
       log(...message);
       this.log(message.join(' '));
     };
+    this.log('正在加载，请稍等。');
     try {
       fetchComics().then(result => {
-        this.log('加载完毕。三秒之后显示漫画列表。');
-        setTimeout(() => {
-          const origin = result.json;
-          this.setState({ origin, comic: origin });
-        }, 3000);
+        this.log('加载完毕。');
+        const origin = result.json;
+        this.setState({ origin, comic: origin });
       });
     } catch (err) {
       console.error(err);
