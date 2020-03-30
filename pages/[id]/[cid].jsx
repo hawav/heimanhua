@@ -1,8 +1,8 @@
 import { NextSeo } from 'next-seo';
-import fetch from 'isomorphic-unfetch';
+import { withRouter } from 'next/router';
 import React, { Component } from 'react';
 import { initGA, logPageView } from '../../utils/analytics';
-import { withRouter } from 'next/router';
+import { cacheFetch } from '../../utils/cache';
 
 function getPictures(chapterAddr, start, end) {
   const pictures = [];
@@ -15,45 +15,83 @@ function getPictures(chapterAddr, start, end) {
 }
 
 export class View extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   componentDidMount() {
     if (!window.GA_INITIALIZED) {
       initGA();
       window.GA_INITIALIZED = true;
     }
     logPageView();
+    setTimeout(this.fetch.bind(this), 0);
+  }
+
+  async fetchDetail(id, cid) {
+    const result = await cacheFetch(
+      location.origin + `/api/getChapterInfo?id=${id}&cid=${cid}`
+    );
+    this.setState(() => ({
+      chapterInfo: result.json
+    }));
+  }
+
+  async fetchChapterList(id, cid) {
+    const result = await cacheFetch(
+      location.origin + '/api/getChapterList?id=' + id
+    );
+    const chapters = result.json;
+    const i = chapters.findIndex(c => c.chapter_id == cid);
+    this.setState(() => ({
+      prev: (i !== -1 && i < chapters.length - 1 && chapters[i + 1]) || null,
+      next: (i > 0 && chapters[i - 1]) || null
+    }));
+  }
+
+  fetch() {
+    const { id, cid } = this.props.router.query;
+    if (id) {
+      this.fetchDetail(id, cid);
+      this.fetchChapterList(id, cid);
+    } else {
+      console.log('找不到id');
+    }
   }
 
   go(cid) {
     this.props.router.replace(
       '/[id]/[cid]/',
-      `/${this.props.chapterInfo.comic_id}/${cid}`
+      `/${this.state.chapterInfo.comic_id}/${cid}`
     );
   }
 
   render() {
-    const c = this.props.chapterInfo;
+    const c = this.state.chapterInfo;
     return (
       (c && (
         <div>
           <NextSeo
             title={
               '嘿，漫画！' +
-              this.props.chapterInfo.comic_name +
+              this.state.chapterInfo.comic_name +
               '-' +
-              this.props.chapterInfo.chapter_name
+              this.state.chapterInfo.chapter_name
             }
             description={
-              this.props.chapterInfo.comic_desc +
+              this.state.chapterInfo.comic_desc +
               '-' +
-              this.props.chapterInfo.chapter_name +
+              this.state.chapterInfo.chapter_name +
               '-嘿，漫画！'
             }
           />
           <div className='text-center'>
-            {this.props.prev && (
+            {this.state.prev && (
               <button
                 className='mb-2 border-b w-full py-2'
-                onClick={this.go.bind(this, this.props.prev.chapter_id)}
+                onClick={this.go.bind(this, this.state.prev.chapter_id)}
               >
                 上一章
               </button>
@@ -68,41 +106,41 @@ export class View extends Component {
                 />
               ))}
             </div>
-            {this.props.next && (
+            {this.state.next && (
               <button
                 className='mt-2 border-t w-full py-2'
-                onClick={this.go.bind(this, this.props.next.chapter_id)}
+                onClick={this.go.bind(this, this.state.next.chapter_id)}
               >
                 下一章
               </button>
             )}
           </div>
         </div>
-      )) || <div>Not found</div>
+      )) || <div>加载中</div>
     );
   }
 }
 
-export async function getServerSideProps(ctx) {
-  const { id, cid } = ctx.query;
-  if (+id && +cid) {
-    const result = await fetch(
-      `https://www.zymk.cn/nodeapi/comic/chapterInfo?id=${id}&chapterId=${cid}`
-    );
-    const data = await result.json();
-    const chaptersRes = await fetch(
-      'https://www.zymk.cn/nodeapi/comic/chapterList?id=' + id
-    );
-    const chapters = (await chaptersRes.json()).data;
-    const i = chapters.findIndex(c => c.chapter_id == cid);
-    return {
-      props: {
-        chapterInfo: data.data,
-        prev: (i !== -1 && i < chapters.length - 1 && chapters[i + 1]) || null,
-        next: (i > 0 && chapters[i - 1]) || null
-      }
-    };
-  } else return { props: {} };
-}
+// export async function getServerSideProps(ctx) {
+//   const { id, cid } = ctx.query;
+//   if (+id && +cid) {
+//     const result = await cacheFetch(
+//       `https://www.zymk.cn/nodeapi/comic/chapterInfo?id=${id}&chapterId=${cid}`
+//     );
+//     const data = await result.json;
+//     const chaptersRes = await cacheFetch(
+//       'https://www.zymk.cn/nodeapi/comic/chapterList?id=' + id
+//     );
+//     const chapters = (await chaptersRes.json).data;
+//     const i = chapters.findIndex(c => c.chapter_id == cid);
+//     return {
+//       props: {
+//         chapterInfo: data.data,
+//         prev: (i !== -1 && i < chapters.length - 1 && chapters[i + 1]) || null,
+//         next: (i > 0 && chapters[i - 1]) || null
+//       }
+//     };
+//   } else return { props: {} };
+// }
 
 export default withRouter(View);

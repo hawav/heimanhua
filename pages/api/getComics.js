@@ -1,7 +1,9 @@
-const fetch = require('isomorphic-unfetch');
+import { cacheFetch } from '../../utils/cache';
 
 export default async (req, res) => {
-  const result = await fetch('https://www.zymk.cn/nodeapi/comic/allComic/');
-  const data = await result.json();
+  const result = await cacheFetch(
+    'https://www.zymk.cn/nodeapi/comic/allComic/'
+  );
+  const data = result.json;
   res.json(data.data);
 };

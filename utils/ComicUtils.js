@@ -2,7 +2,7 @@ import fetch from 'isomorphic-unfetch';
 
 export async function fetchComics() {
   const res = await fetch('https://www.zymk.cn/nodeapi/comic/allComic/');
-  const data = (await res.json()).data;
+  const data = (await res.json).data;
   if (res.status === 200) return data;
   throw res.text();
 }

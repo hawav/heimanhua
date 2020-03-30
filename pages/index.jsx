@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { ComicListView } from '../components/ComicListView';
 import { initGA, logPageView } from '../utils/analytics';
+import { cacheFetch } from '../utils/cache';
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      comic: props.comic
+      origin: props.comic
     };
   }
 
   handleSearch = e => {
     const reg = new RegExp(e.target.value);
     this.setState({
-      comic: this.props.comic.filter(c => reg.test(c.comic_name))
+      comic: this.state.origin.filter(c => reg.test(c.comic_name))
     });
   };
 
@@ -24,11 +25,15 @@ export default class Home extends Component {
       window.GA_INITIALIZED = true;
     }
     logPageView();
+    cacheFetch(location.origin + '/api/getComics').then(result => {
+      const origin = result.json;
+      this.setState({ origin, comic: origin });
+    });
   }
 
   render() {
     return (
-      this.state.comic && (
+      (this.state.comic && (
         <div>
           <div className='px-10 py-5'>
             <input
@@ -44,19 +49,23 @@ export default class Home extends Component {
               .slice(0, 250)}
           />
         </div>
-      )
+      )) || <div>加载中</div>
     );
   }
 }
 
-export async function getServerSideProps(ctx) {
-  // const res = await fetch('http://192.168.1.82:3000/api/getComics');
+// export async function get
 
-  const result = await fetch('https://www.zymk.cn/nodeapi/comic/allComic/');
-  const data = await result.json();
-  return {
-    props: {
-      comic: data.data
-    }
-  };
-}
+// export async function _getServerSideProps(ctx) {
+//   // const res = await fetch('http://192.168.1.82:3000/api/getComics');
+
+//   const result = await cacheFetch(
+//     'https://www.zymk.cn/nodeapi/comic/allComic/'
+//   );
+//   const data = await result.json;
+//   return {
+//     props: {
+//       comic: data.data
+//     }
+//   };
+// }

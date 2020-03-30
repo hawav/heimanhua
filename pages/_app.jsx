@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../tailwind.css';
 
 class MyApp extends Component {
   constructor(props) {

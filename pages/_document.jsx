@@ -22,10 +22,10 @@ export default class MyDocument extends Document {
             src='https://www.googletagmanager.com/gtag/js?id=UA-153477912-2'
           ></script> */}
 
-          <link
+          {/* <link
             href='https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css'
             rel='stylesheet'
-          ></link>
+          ></link> */}
         </Head>
         <body className='custom_class'>
           <Main />
