@@ -8,7 +8,8 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
-      origin: props.comic
+      origin: props.comic,
+      log: []
     };
   }
 
@@ -22,16 +23,42 @@ export default class Home extends Component {
     }
   };
 
+  log(text) {
+    const log = this.state.log;
+    log.push(new Date().toLocaleTimeString() + '：' + text);
+    this.setState({ log });
+  }
+
   componentDidMount() {
     if (!window.GA_INITIALIZED) {
       initGA();
       window.GA_INITIALIZED = true;
     }
     logPageView();
-    cacheFetch(location.origin + '/api/getComics').then(result => {
-      const origin = result.json;
-      this.setState({ origin, comic: origin });
-    });
+
+    this.log('攻城狮们正在努力修复BUG，给您造成不便，敬请谅解。');
+    this.log('正在加载，请稍等。');
+    const error = window.console.error;
+    window.console.error = (...message) => {
+      error(...message);
+      this.log('发生错误：' + message.join(' '));
+    };
+    const log = window.console.log;
+    window.console.log = (...message) => {
+      log(...message);
+      this.log(message.join(' '));
+    };
+    try {
+      cacheFetch(location.origin + '/api/getComics').then(result => {
+        this.log('加载完毕。三秒之后显示漫画列表。');
+        setTimeout(() => {
+          const origin = result.json;
+          this.setState({ origin, comic: origin });
+        }, 3000);
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   render() {
@@ -52,7 +79,13 @@ export default class Home extends Component {
               .slice(0, 250)}
           />
         </div>
-      )) || <div>加载中</div>
+      )) || (
+        <div className='text-gray-600'>
+          {this.state.log.map((t, i) => (
+            <p key={i}>{t}</p>
+          ))}
+        </div>
+      )
     );
   }
 }
