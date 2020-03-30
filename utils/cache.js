@@ -60,8 +60,8 @@ function wrap(text) {
 }
 
 export async function cacheFetch(url) {
-  const _cache = cache.get(url);
   console.log('正在请求网址：' + url);
+  const _cache = cache.get(url);
   if (_cache) {
     if (_cache.updateAt) {
       if (_cache.updateAt + expiration < Date.now()) {
