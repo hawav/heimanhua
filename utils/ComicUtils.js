@@ -6,7 +6,7 @@ if (typeof window !== 'undefined') {
 }
 
 export function fetchComics() {
-  this.log('开始fetch');
+  console.log('开始fetch');
   return cacheFetch(baseUrl + '/getComics');
 }
 
