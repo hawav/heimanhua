@@ -1,7 +1,7 @@
 import { NextSeo } from 'next-seo';
 import React, { Component } from 'react';
 import ChapterList from '../../components/ChapterList';
-import { getImageUrl } from '../../utils/ComicUtils';
+import { getImageUrl, comicDetail, chapterList } from '../../utils/ComicUtils';
 import { initGA, logPageView } from '../../utils/analytics';
 import { cacheFetch } from '../../utils/cache';
 import { withRouter } from 'next/router';
@@ -27,16 +27,14 @@ export class ComicDetail extends Component {
   }
 
   async fetchDetail(id) {
-    const result = await cacheFetch(location.origin + '/api/detail?id=' + id);
+    const result = await comicDetail(id);
     this.setState(() => ({
       comic: result.json
     }));
   }
 
   async fetchChapterList(id) {
-    const result = await cacheFetch(
-      location.origin + '/api/getChapterList?id=' + id
-    );
+    const result = await chapterList(id);
     this.setState(() => ({
       chapters: result.json
     }));

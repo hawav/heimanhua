@@ -1,10 +1,24 @@
-import fetch from 'isomorphic-unfetch';
+import { cacheFetch } from './cache';
+// let baseUrl = 'http://proxy.hawav.cn:2000';
+let baseUrl;
+if (typeof window !== 'undefined') {
+  baseUrl = location.origin + '/api';
+}
 
-export async function fetchComics() {
-  const res = await fetch('https://www.zymk.cn/nodeapi/comic/allComic/');
-  const data = (await res.json).data;
-  if (res.status === 200) return data;
-  throw res.text();
+export function fetchComics() {
+  return cacheFetch(baseUrl + '/getComics');
+}
+
+export function comicDetail(id) {
+  return cacheFetch(baseUrl + '/detail?id=' + id);
+}
+
+export function chapterList(id) {
+  return cacheFetch(baseUrl + '/getChapterList?id=' + id);
+}
+
+export function chapterInfo(id, cid) {
+  return cacheFetch(baseUrl + `/getChapterInfo?id=${id}&cid=${cid}`);
 }
 
 export function getImageUrl(id) {

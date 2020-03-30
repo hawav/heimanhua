@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ComicListView } from '../components/ComicListView';
 import { initGA, logPageView } from '../utils/analytics';
 import { cacheFetch } from '../utils/cache';
+import { fetchComics } from '../utils/ComicUtils';
 
 export default class Home extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ export default class Home extends Component {
       this.log(message.join(' '));
     };
     try {
-      cacheFetch(location.origin + '/api/getComics').then(result => {
+      fetchComics().then(result => {
         this.log('加载完毕。三秒之后显示漫画列表。');
         setTimeout(() => {
           const origin = result.json;

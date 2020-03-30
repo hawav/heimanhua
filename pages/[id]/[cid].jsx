@@ -3,6 +3,7 @@ import { withRouter } from 'next/router';
 import React, { Component } from 'react';
 import { initGA, logPageView } from '../../utils/analytics';
 import { cacheFetch } from '../../utils/cache';
+import { chapterInfo, chapterList } from '../../utils/ComicUtils';
 
 function getPictures(chapterAddr, start, end) {
   const pictures = [];
@@ -31,18 +32,14 @@ export class View extends Component {
   }
 
   async fetchDetail(id, cid) {
-    const result = await cacheFetch(
-      location.origin + `/api/getChapterInfo?id=${id}&cid=${cid}`
-    );
+    const result = await chapterInfo(id, cid);
     this.setState(() => ({
       chapterInfo: result.json
     }));
   }
 
   async fetchChapterList(id, cid) {
-    const result = await cacheFetch(
-      location.origin + '/api/getChapterList?id=' + id
-    );
+    const result = await chapterList(id);
     const chapters = result.json;
     const i = chapters.findIndex(c => c.chapter_id == cid);
     this.setState(() => ({
