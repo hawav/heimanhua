@@ -78,7 +78,7 @@ export class ComicDetail extends Component {
             <span></span>
           </div>
           <div className='px-2'>
-            {this.state.view === 'chapter' && (
+            {this.state.view === 'chapter' && this.state.chapters && (
               <ChapterList
                 id={this.state.comic.comic_id}
                 chapters={this.state.chapters}

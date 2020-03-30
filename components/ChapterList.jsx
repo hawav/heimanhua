@@ -5,7 +5,8 @@ export class ChapterList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      desc: true
+      desc: true,
+      chapters: props.chapters
     };
   }
 
@@ -15,27 +16,25 @@ export class ChapterList extends React.Component {
 
   render() {
     return (
-      (this.props.chapters && (
+      (this.state.chapters && (
         <div>
           {/* {'上次更新：' &&
           new Date(state.chapters[0].create_time).toLocaleString()} */}
           <div className='px-3 mt-2 flex justify-between w-full'>
             <button
               className='text-gray-600'
-              onClick={() =>
+              onClick={() => {
                 this.setState({
-                  desc: !this.state.desc
-                })
-              }
+                  desc: !this.state.desc,
+                  chapters: this.state.chapters.reverse()
+                });
+              }}
             >
               {(this.state.desc && '降序') || '升序'}
             </button>
           </div>
           <div className='grid grid-cols-4'>
-            {(
-              (this.state.desc && this.props.chapters) ||
-              this.props.chapters.reverse()
-            ).map(c => (
+            {this.state.chapters.map(c => (
               <button
                 key={c.chapter_id}
                 className='m-2 py-1 rounded border text-center'

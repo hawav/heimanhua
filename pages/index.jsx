@@ -14,9 +14,12 @@ export default class Home extends Component {
 
   handleSearch = e => {
     const reg = new RegExp(e.target.value);
-    this.setState({
-      comic: this.state.origin.filter(c => reg.test(c.comic_name))
-    });
+    const result = this.state.origin.filter(c => reg.test(c.comic_name));
+    if (result.length) {
+      this.setState({
+        comic: result
+      });
+    }
   };
 
   componentDidMount() {
