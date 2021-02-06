@@ -15,7 +15,7 @@ export default class MyDocument extends Document {
       <html>
         <Head>
           <title>嘿，漫画！</title>
-
+          <script data-ad-client="ca-pub-2712478982001783" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
           {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
           {/* <script
             async
