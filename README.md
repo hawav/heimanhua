@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app).
 
+## Deprecated
+
+This project is no longer maintained and the website may be unavailable.
+
+网站可能打不开，作者懒狗不想维护了。
+
 ## Getting Started
 
 First, run the development server:
